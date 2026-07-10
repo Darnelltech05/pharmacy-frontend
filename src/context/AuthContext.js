@@ -59,6 +59,7 @@ export const AuthProvider = ({ children }) => {
             }
             return { success: false, message: response.data.message };
         } catch (err) {
+            console.error('Registration error:', err);
             const message = err.response?.data?.message || 'Registration failed';
             setError(message);
             return { success: false, message };
