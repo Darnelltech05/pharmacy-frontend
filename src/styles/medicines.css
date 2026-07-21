@@ -1,0 +1,467 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
+
+:root {
+  --color-bg: #f6f7f5;
+  --color-surface: #ffffff;
+  --color-ink: #1c2321;
+  --color-ink-muted: #5b6763;
+  --color-primary: #0e5f5a;
+  --color-primary-dark: #0a4744;
+  --color-primary-tint: #e6f0ef;
+  --color-accent: #d98c3f;
+  --color-accent-tint: #fbf0e2;
+  --color-danger: #c1443c;
+  --color-danger-tint: #fbe9e7;
+  --color-success: #3f8a5d;
+  --color-success-tint: #e9f4ee;
+  --color-border: #e2e5e2;
+
+  --font-display: 'Sora', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --radius: 10px;
+  --shadow-card: 0 1px 2px rgba(28, 35, 33, 0.04), 0 4px 16px rgba(28, 35, 33, 0.04);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+/* ---------- Page header ---------- */
+
+.medicine-list {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.medicine-list-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.medicine-list-header h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.75rem;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--color-ink);
+}
+
+.medicine-list-header .subtitle {
+  font-family: var(--font-body);
+  color: var(--color-ink-muted);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+/* ---------- Buttons ---------- */
+
+button {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6rem 1.1rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+.btn-primary,
+.medicine-list-header button,
+.medicine-form button[type='submit'] {
+  background: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover,
+.medicine-list-header button:hover,
+.medicine-form button[type='submit']:hover {
+  background: var(--color-primary-dark);
+}
+
+.btn-secondary,
+.medicine-search button[type='button'],
+.medicine-form button[type='button'],
+.details-actions button:not(.danger) {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border-color: var(--color-border);
+}
+
+.btn-secondary:hover {
+  background: var(--color-bg);
+}
+
+button.danger {
+  background: var(--color-danger-tint);
+  color: var(--color-danger);
+  border-color: transparent;
+}
+
+button.danger:hover {
+  background: var(--color-danger);
+  color: white;
+}
+
+/* ---------- Search bar ---------- */
+
+.medicine-search {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.medicine-search input {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.medicine-search input:focus {
+  border-color: var(--color-primary);
+}
+
+.medicine-search button {
+  border-radius: 999px;
+}
+
+/* ---------- Table card ---------- */
+
+.medicine-list table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.medicine-list thead th {
+  text-align: left;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-muted);
+  background: var(--color-bg);
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.medicine-list tbody td {
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.medicine-list tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.medicine-list tbody tr {
+  transition: background 0.1s ease;
+}
+
+.medicine-list tbody tr:hover {
+  background: var(--color-primary-tint);
+}
+
+.medicine-list td.price,
+.medicine-list td.stock {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.medicine-list tbody button {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-primary);
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
+}
+
+.medicine-list tbody button:hover {
+  background: var(--color-primary-tint);
+  border-color: var(--color-primary);
+}
+
+/* ---------- Signature: status badges ---------- */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  white-space: nowrap;
+}
+
+.status-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-badge.in-stock {
+  background: var(--color-success-tint);
+  color: var(--color-success);
+}
+
+.status-badge.low-stock {
+  background: var(--color-accent-tint);
+  color: var(--color-accent);
+}
+
+.status-badge.expiring-soon {
+  background: var(--color-accent-tint);
+  color: var(--color-accent);
+}
+
+.status-badge.expired {
+  background: var(--color-danger-tint);
+  color: var(--color-danger);
+}
+
+/* ---------- Empty / loading / error states ---------- */
+
+.medicine-list > div:not(.medicine-list-header):not(.medicine-search) {
+  color: var(--color-ink-muted);
+  font-size: 0.9rem;
+  padding: 2.5rem 0;
+  text-align: center;
+}
+
+.error-message {
+  background: var(--color-danger-tint);
+  color: var(--color-danger);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  text-align: left !important;
+}
+
+/* ---------- Form ---------- */
+
+.medicine-form {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.medicine-form h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.6rem;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.5rem;
+}
+
+.medicine-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.25rem;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 2rem;
+}
+
+.medicine-form h2,
+.medicine-form .error-message,
+.medicine-form label:has(textarea),
+.medicine-form .checkbox-label,
+.medicine-form small,
+.medicine-form .form-actions {
+  grid-column: 1 / -1;
+}
+
+.medicine-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+}
+
+.medicine-form input,
+.medicine-form textarea {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--color-ink);
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.medicine-form input:focus,
+.medicine-form textarea:focus {
+  border-color: var(--color-primary);
+}
+
+.medicine-form input:disabled {
+  background: var(--color-bg);
+  color: var(--color-ink-muted);
+}
+
+.medicine-form textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.medicine-form small {
+  color: var(--color-ink-muted);
+  font-size: 0.75rem;
+  margin-top: -0.5rem;
+}
+
+.checkbox-label {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 0.5rem !important;
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.checkbox-label input {
+  width: 16px;
+  height: 16px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+/* ---------- Details ---------- */
+
+.medicine-details {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 4rem;
+}
+
+.medicine-details h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.75rem;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.25rem;
+}
+
+.medicine-details > p {
+  color: var(--color-ink-muted);
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.medicine-details dl {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.medicine-details dl > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.medicine-details dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-muted);
+  font-weight: 600;
+}
+
+.medicine-details dd {
+  margin: 0;
+  font-size: 1rem;
+  font-family: var(--font-mono);
+}
+
+.medicine-details dd.expired {
+  color: var(--color-danger);
+}
+
+.stock-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.stock-controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+}
+
+.stock-controls input {
+  width: 80px;
+  font-family: var(--font-mono);
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.details-actions {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.medicine-details > button {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  padding: 0;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+}
