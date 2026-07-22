@@ -13,12 +13,7 @@ const PaymentList = ({ refresh }) => {
 
             setLoading(true);
 
-            console.log("========== CALLING BACKEND ==========");
-
             const response = await paymentService.getAllPayments();
-
-            console.log("SUCCESS RESPONSE:");
-            console.log(response);
 
             if (response.success) {
                 setPayments(response.data);
@@ -28,27 +23,76 @@ const PaymentList = ({ refresh }) => {
 
         } catch (err) {
 
-            console.log("========== ERROR ==========");
-            console.log(err);
-
-            if (err.response) {
-                console.log("Status:", err.response.status);
-                console.log("Data:", err.response.data);
-            } else if (err.request) {
-                console.log("Request:", err.request);
-            } else {
-                console.log("Message:", err.message);
-            }
-
             setError(
                 err.response?.data?.message ||
-                err.message ||
-                "Failed to load payments."
+                'Failed to load payments.'
             );
 
         } finally {
 
             setLoading(false);
+
+        }
+
+    };
+
+    const handleDelete = async (id) => {
+
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this payment?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+
+            const response = await paymentService.deletePayment(id);
+
+            alert(response.message);
+
+            loadPayments();
+
+        } catch (err) {
+
+            alert(
+                err.response?.data?.message ||
+                "Failed to delete payment."
+            );
+
+        }
+
+    };
+
+    const handleUpdate = async (payment) => {
+
+        const status = window.prompt(
+            "Enter new status:\n\nPENDING\nSUCCESSFUL\nFAILED\nREFUNDED",
+            payment.paymentStatus
+        );
+
+        if (!status) {
+            return;
+        }
+
+        try {
+
+            const response = await paymentService.updatePaymentStatus(
+                payment.id,
+                status.toUpperCase()
+            );
+
+            alert(response.message);
+
+            loadPayments();
+
+        } catch (err) {
+
+            alert(
+                err.response?.data?.message ||
+                "Failed to update payment."
+            );
 
         }
 
@@ -137,12 +181,14 @@ const PaymentList = ({ refresh }) => {
 
                                     <button
                                         className="btn btn-warning btn-sm me-2"
+                                        onClick={() => handleUpdate(payment)}
                                     >
                                         Update
                                     </button>
 
                                     <button
                                         className="btn btn-danger btn-sm"
+                                        onClick={() => handleDelete(payment.id)}
                                     >
                                         Delete
                                     </button>
