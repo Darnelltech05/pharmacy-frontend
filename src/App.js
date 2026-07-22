@@ -6,6 +6,7 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Dashboard from './components/dashboard/Dashboard';
 import Profile from './components/auth/Profile';
+import PaymentsPage from './pages/PaymentsPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -16,7 +17,9 @@ function App() {
                 <div className="App">
                     <Routes>
                         <Route path="/login" element={<Login />} />
+
                         <Route path="/register" element={<Register />} />
+
                         <Route
                             path="/dashboard"
                             element={
@@ -25,6 +28,7 @@ function App() {
                                 </PrivateRoute>
                             }
                         />
+
                         <Route
                             path="/profile"
                             element={
@@ -33,6 +37,16 @@ function App() {
                                 </PrivateRoute>
                             }
                         />
+
+                        <Route
+                            path="/payments"
+                            element={
+                                <PrivateRoute>
+                                    <PaymentsPage />
+                                </PrivateRoute>
+                            }
+                        />
+
                         <Route path="/" element={<Login />} />
                     </Routes>
                 </div>
