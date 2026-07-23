@@ -18,40 +18,58 @@ const Navbar = () => {
                 <Link className="navbar-brand" to="/dashboard">
                     🏥 SA MedConnect
                 </Link>
+
                 <button
                     className="navbar-toggler"
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
                 >
                     <span className="navbar-toggler-icon"></span>
                 </button>
+
                 <div className="collapse navbar-collapse" id="navbarNav">
-                    <ul className="navbar-nav ms-auto">
-                        {user && (
-                            <>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/dashboard">Dashboard</Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/profile">Profile</Link>
-                                </li>
-                                <li className="nav-item">
-                                    <span className="navbar-text text-light me-2">
-                                        👤 {user.username}
-                                    </span>
-                                </li>
-                                <li className="nav-item">
-                                    <button
-                                        className="btn btn-outline-light btn-sm"
-                                        onClick={handleLogout}
-                                    >
-                                        Logout
-                                    </button>
-                                </li>
-                            </>
-                        )}
-                    </ul>
+                    {user && (
+                        <ul className="navbar-nav ms-auto align-items-center">
+
+                           <li className="nav-item">
+         <Link className="nav-link" to="/dashboard">
+        Dashboard
+    </Link>
+</li>
+
+<li className="nav-item">
+    <Link className="nav-link" to="/payments">
+        Payments
+    </Link>
+</li>
+
+<li className="nav-item">
+    <Link className="nav-link" to="/profile">
+        Profile
+    </Link>
+</li>
+
+                            <li className="nav-item">
+                                <span className="navbar-text text-light mx-3">
+                                    👤 {user.username}
+                                </span>
+                            </li>
+
+                            <li className="nav-item">
+                                <button
+                                    className="btn btn-outline-light btn-sm"
+                                    onClick={handleLogout}
+                                >
+                                    Logout
+                                </button>
+                            </li>
+
+                        </ul>
+                    )}
                 </div>
             </div>
         </nav>
