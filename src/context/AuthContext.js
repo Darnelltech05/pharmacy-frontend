@@ -23,8 +23,15 @@ export const AuthProvider = ({ children }) => {
             const response = await api.post('/auth/login', { username, password });
 
             if (response.data.success) {
-                const { token, username: userUsername, email, role } = response.data.data;
-                const userData = { username: userUsername, email, role };
+                // The backend returns AuthResponse containing token, username, email, and role
+                // We extract token separately and keep the rest as userData
+                const { token, ...userData } = response.data.data;
+
+                // Capturing all fields returned by backend (e.g., fullName if added)
+                // and normalizing role for backward compatibility
+                if (userData.role === 'PATIENT') {
+                    userData.role = 'CUSTOMER';
+                }
 
                 localStorage.setItem('token', token);
                 localStorage.setItem('user', JSON.stringify(userData));
@@ -48,8 +55,13 @@ export const AuthProvider = ({ children }) => {
             const response = await api.post('/auth/register', userData);
 
             if (response.data.success) {
-                const { token, username, email, role } = response.data.data;
-                const userInfo = { username, email, role };
+                // Similarly capture all user data from registration response
+                const { token, ...userInfo } = response.data.data;
+
+                // Normalize role just in case
+                if (userInfo.role === 'PATIENT') {
+                    userInfo.role = 'CUSTOMER';
+                }
 
                 localStorage.setItem('token', token);
                 localStorage.setItem('user', JSON.stringify(userInfo));

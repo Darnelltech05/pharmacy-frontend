@@ -4,7 +4,6 @@ import PaymentForm from '../components/payments/PaymentForm';
 import PaymentList from '../components/payments/PaymentList';
 
 const PaymentsPage = () => {
-
     const [refresh, setRefresh] = useState(false);
 
     const handlePaymentCreated = () => {
@@ -12,50 +11,26 @@ const PaymentsPage = () => {
     };
 
     return (
-
-        <>
+        <div className="bg-light min-vh-100">
             <Navbar />
-
-            <div className="container mt-4">
-
-                <div className="row">
-
+            <div className="container py-5">
+                <div className="row mb-4">
                     <div className="col-12">
-
-                        <h2 className="mb-4">
-                            Payment Management
-                        </h2>
-
+                        <h2 className="text-primary fw-bold">Payment Management</h2>
+                        <p className="text-muted">Process and track customer payments.</p>
                     </div>
-
                 </div>
-
-                <div className="row">
-
+                <div className="row g-4">
                     <div className="col-lg-4">
-
-                        <PaymentForm
-                            onPaymentCreated={handlePaymentCreated}
-                        />
-
+                        <PaymentForm onPaymentCreated={handlePaymentCreated} />
                     </div>
-
                     <div className="col-lg-8">
-
-                        <PaymentList
-                            refresh={refresh}
-                        />
-
+                        <PaymentList refresh={refresh} />
                     </div>
-
                 </div>
-
             </div>
-
-        </>
-
+        </div>
     );
-
 };
 
 export default PaymentsPage;

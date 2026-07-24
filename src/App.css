@@ -1,38 +1,249 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+
+:root {
+  /* Colors - Modern Medical Palette (Professional & Clean) */
+  --primary: #004d99; /* Deeper, more medical blue */
+  --primary-dark: #003366;
+  --primary-light: #f0f7ff;
+  --secondary: #1e8a5f; /* Forest medical green */
+  --secondary-dark: #156244;
+  --accent: #008489; /* Teal accent */
+  --danger: #d93025;
+  --success: #1e8a5f;
+  --warning: #f29900;
+  --info: #007bff;
+  
+  --bg-body: #ffffff; /* pure white background as requested */
+  --bg-surface: #ffffff;
+  --bg-muted: #f8f9fa;
+  --border-color: #e0e0e0;
+  
+  --text-main: #202124;
+  --text-muted: #5f6368;
+  --text-inverse: #ffffff;
+
+  /* Typography */
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: 'Plus Jakarta Sans', sans-serif;
+
+  /* Shadows - Subtler shadows for professional look */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.04);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.06);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0,0,0,0.02);
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  
+  /* Radius - Professional, not oversized */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 16px;
 }
 
-.App-logo {
-  height: 40vmin;
+/* Background Patterns */
+.bg-pattern-medical {
+  background-color: #ffffff;
+  background-image: radial-gradient(var(--primary-light) 0.5px, transparent 0.5px);
+  background-size: 20px 20px;
+}
+
+.bg-pattern-plus {
+  background-color: #ffffff;
+  background-image: 
+    linear-gradient(var(--primary-light) 1px, transparent 1px),
+    linear-gradient(90deg, var(--primary-light) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.bg-gradient-soft {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20rem;
+  font-weight: 900;
+  color: var(--primary);
+  opacity: 0.02;
   pointer-events: none;
+  white-space: nowrap;
+  user-select: none;
+  z-index: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.watermark-logo {
+  position: fixed;
+  bottom: -50px;
+  right: -50px;
+  width: 400px;
+  height: 400px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23004d99' %3E%3Cpath d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: -1;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600; /* slightly less bold for professional feel */
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md); /* reduced from lg */
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: #d1d5db;
+}
+
+.btn {
+  font-weight: 500;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-sm); /* smaller radius */
+  transition: all 0.2s ease;
+  text-transform: none; /* ensure no forced uppercase */
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.navbar {
+  background-color: white !important;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: none; /* remove shadow for cleaner look */
+  padding: 0.75rem 0;
+}
+
+.form-control {
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid #ced4da;
+  font-size: 0.95rem;
+}
+
+.form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(0, 77, 153, 0.1);
+}
+
+.badge {
+  font-weight: 500;
+  padding: 0.4em 0.8em;
+  border-radius: 20px; /* pill style for badges is fine but keep it restrained */
+}
+
+/* Animations */
+/* Custom Badge Colors */
+.bg-primary-light { background-color: rgba(0, 102, 204, 0.1) !important; }
+.bg-success-light { background-color: rgba(46, 204, 113, 0.1) !important; }
+.bg-warning-light { background-color: rgba(241, 196, 15, 0.1) !important; }
+.bg-info-light { background-color: rgba(52, 152, 219, 0.1) !important; }
+.bg-danger-light { background-color: rgba(231, 76, 60, 0.1) !important; }
+
+.text-primary { color: var(--primary) !important; }
+.text-success { color: #27ae60 !important; }
+.text-warning { color: #f39c12 !important; }
+.text-info { color: #2980b9 !important; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Loading Skeletons */
+@keyframes shimmer {
+  0% { background-position: -468px 0; }
+  100% { background-position: 468px 0; }
+}
+
+.skeleton {
+  background: #f6f7f8;
+  background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+  background-repeat: no-repeat;
+  background-size: 800px 104px;
+  display: inline-block;
+  position: relative;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.skeleton-text {
+  height: 12px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.skeleton-title {
+  height: 20px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  width: 60%;
+}
+
+.skeleton-card {
+  height: 200px;
+  border-radius: var(--radius-lg);
+  width: 100%;
+}
+
+/* Empty State Styling */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  border: 2px dashed var(--border-color);
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  display: block;
+  opacity: 0.5;
 }

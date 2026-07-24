@@ -1,274 +1,223 @@
-import React, { useEffect, useState } from "react";
-import {
-    getAllOrders,
-    searchOrders,
-    filterOrdersByStatus
-} from "../../services/orderService";
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import Navbar from '../common/Navbar';
+import { orderService } from '../../services/orderService';
+import { useAuth } from '../../context/AuthContext';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-import OrderDetails from "./OrderDetails";
-
-
-function OrderHistory() {
-
+const OrderHistory = () => {
+    const { user } = useAuth();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterStatus, setFilterStatus] = useState('');
 
-    const [selectedOrder, setSelectedOrder] = useState(null);
-
-    const [username, setUsername] = useState("");
-    const [status, setStatus] = useState("");
-
+    const isAdmin = user && (user.role === 'ADMIN' || user.role === 'PHARMACIST');
 
     useEffect(() => {
-        fetchOrders();
-    }, []);
+        loadOrders();
+    }, [user]);
 
-
-
-    const fetchOrders = async () => {
-
+    const loadOrders = async () => {
         try {
+            setLoading(true);
+            setError('');
 
-            const data = await getAllOrders();
+            console.log('Fetching orders...'); // ✅ Debug log
 
-            setOrders(data);
+            let response;
+            if (isAdmin) {
+                response = await orderService.getAllOrders();
+            } else {
+                response = await orderService.getOrderHistory();
+            }
 
-        } catch (error) {
+            console.log('Orders response:', response); // ✅ Debug log
 
-            console.error(error);
-            setOrders([]);
-
+            if (response.success) {
+                let data = response.data || [];
+                
+                // Extra frontend safety for patients
+                if (!isAdmin && user?.username) {
+                    const hasUserIdentifier = data.some(o => o.username || o.customerUsername || o.user?.username);
+                    if (hasUserIdentifier) {
+                        data = data.filter(o => 
+                            o.username === user.username || 
+                            o.customerUsername === user.username ||
+                            o.user?.username === user.username
+                        );
+                    }
+                }
+                
+                setOrders(data);
+            } else {
+                setError(response.message || 'Failed to load orders');
+            }
+        } catch (err) {
+            console.error('Error loading orders:', err); // ✅ Debug log
+            setError(err.response?.data?.message || 'Failed to load order history');
         } finally {
-
             setLoading(false);
-
         }
     };
 
-
-
-    const handleSearch = async () => {
-
-        try {
-
-            const data = await searchOrders(username);
-
-            setOrders(data);
-
-        } catch (error) {
-
-            console.error(error);
-
-        }
-
+    const getStatusColor = (status) => {
+        const colors = {
+            'PENDING': 'warning',
+            'PAID': 'info',
+            'PROCESSING': 'primary',
+            'SHIPPED': 'success',
+            'DELIVERED': 'success'
+        };
+        return colors[status] || 'secondary';
     };
 
-
-
-    const handleStatusFilter = async () => {
-
-        try {
-
-            const data = await filterOrdersByStatus(status);
-
-            setOrders(data);
-
-        } catch (error) {
-
-            console.error(error);
-
+    const filteredOrders = orders.filter(order => {
+        let match = true;
+        if (searchTerm) {
+            match = match && order.orderUuid?.toLowerCase().includes(searchTerm.toLowerCase());
         }
-
-    };
-
-
+        if (filterStatus) {
+            match = match && order.status === filterStatus;
+        }
+        return match;
+    });
 
     if (loading) {
-        return <p>Loading orders...</p>;
+        return (
+            <div className="container mt-5 text-center">
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        );
     }
 
-
-
     return (
+        <>
+            <Navbar />
+            <div className="container py-5">
+                <div className="row mb-4">
+                    <div className="col-12 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                        <div>
+                            <h2 className="text-primary fw-bold mb-1">Order History</h2>
+                            <p className="text-muted mb-0">Track and manage your medicine orders.</p>
+                        </div>
+                        <Link to="/orders/new" className="btn btn-primary rounded-pill px-4 py-2 shadow-sm">
+                            <span className="me-2">+</span>Place New Order
+                        </Link>
+                    </div>
+                </div>
 
-        <div style={{ padding: "20px" }}>
+                <div className="card border-0 shadow-sm p-4 mb-4">
+                    <div className="row g-3">
+                        <div className="col-md-6">
+                            <label className="form-label small fw-bold text-muted text-uppercase">Search</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Order Reference ID..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+                        <div className="col-md-3">
+                            <label className="form-label small fw-bold text-muted text-uppercase">Status</label>
+                            <select
+                                className="form-select"
+                                value={filterStatus}
+                                onChange={(e) => setFilterStatus(e.target.value)}
+                            >
+                                <option value="">All Statuses</option>
+                                <option value="PENDING">Pending</option>
+                                <option value="PAID">Paid</option>
+                                <option value="PROCESSING">Processing</option>
+                                <option value="SHIPPED">Shipped</option>
+                                <option value="DELIVERED">Delivered</option>
+                            </select>
+                        </div>
+                        <div className="col-md-3 d-flex align-items-end">
+                            <button
+                                className="btn btn-light w-100 py-2 border rounded-3"
+                                onClick={() => {
+                                    setSearchTerm('');
+                                    setFilterStatus('');
+                                }}
+                            >
+                                Clear Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
+                {error && (
+                    <div className="alert alert-danger border-0 rounded-3 mb-4" role="alert">
+                        <strong>Error:</strong> {error}
+                    </div>
+                )}
 
-            <h2>Order History</h2>
-
-
-            <div style={{ marginBottom: "20px" }}>
-
-
-                <input
-                    type="text"
-                    placeholder="Search username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-
-
-                <button
-                    onClick={handleSearch}
-                    style={{ marginLeft: "10px" }}
-                >
-                    Search
-                </button>
-
-
-
-                <select
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    style={{ marginLeft: "20px" }}
-                >
-
-                    <option value="">
-                        Select Status
-                    </option>
-
-                    <option value="PENDING">
-                        PENDING
-                    </option>
-
-                    <option value="PAID">
-                        PAID
-                    </option>
-
-                    <option value="PROCESSING">
-                        PROCESSING
-                    </option>
-
-                    <option value="SHIPPED">
-                        SHIPPED
-                    </option>
-
-                    <option value="DELIVERED">
-                        DELIVERED
-                    </option>
-
-                </select>
-
-
-                <button
-                    onClick={handleStatusFilter}
-                    style={{ marginLeft: "10px" }}
-                >
-                    Filter
-                </button>
-
-
-                <button
-                    onClick={fetchOrders}
-                    style={{ marginLeft: "10px" }}
-                >
-                    Reset
-                </button>
-
-
+                {!loading && filteredOrders.length === 0 && !error ? (
+                    <div className="text-center py-5 bg-white rounded-4 shadow-sm">
+                        <div className="mb-3" style={{ fontSize: '3rem' }}>📦</div>
+                        <h4 className="fw-bold">No orders found</h4>
+                        <p className="text-muted mb-4">You haven't placed any orders matching your filters.</p>
+                        <Link to="/orders/new" className="btn btn-primary rounded-pill px-4">
+                            Place Your First Order
+                        </Link>
+                    </div>
+                ) : filteredOrders.length > 0 ? (
+                    <div className="card border-0 shadow-sm overflow-hidden">
+                        <div className="table-responsive">
+                            <table className="table table-hover align-middle mb-0">
+                                <thead className="bg-light">
+                                    <tr>
+                                        <th className="px-4 py-3 text-muted small fw-bold text-uppercase">Reference</th>
+                                        <th className="py-3 text-muted small fw-bold text-uppercase">Date</th>
+                                        <th className="py-3 text-muted small fw-bold text-uppercase">Total</th>
+                                        <th className="py-3 text-muted small fw-bold text-uppercase">Status</th>
+                                        <th className="py-3 text-muted small fw-bold text-uppercase d-none d-md-table-cell">Pickup Location</th>
+                                        <th className="px-4 py-3 text-end text-muted small fw-bold text-uppercase">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredOrders.map(order => (
+                                        <tr key={order.id}>
+                                            <td className="px-4 py-3">
+                                                <code className="text-primary fw-bold">{order.orderUuid?.substring(0, 8) || 'N/A'}</code>
+                                            </td>
+                                            <td className="py-3 small text-muted">
+                                                {new Date(order.orderDate).toLocaleDateString()}
+                                            </td>
+                                            <td className="py-3 fw-bold text-primary">
+                                                R{order.totalAmount?.toFixed(2)}
+                                            </td>
+                                            <td className="py-3">
+                                                <span className={`badge rounded-pill px-3 py-2 bg-opacity-10 text-${getStatusColor(order.status)} bg-${getStatusColor(order.status)}`}>
+                                                    {order.status}
+                                                </span>
+                                            </td>
+                                            <td className="py-3 small d-none d-md-table-cell text-muted">
+                                                {order.clinicPickupLocation}
+                                            </td>
+                                            <td className="px-4 py-3 text-end">
+                                                <Link
+                                                    to={`/orders/${order.id}`}
+                                                    className="btn btn-sm btn-outline-primary rounded-pill px-3"
+                                                >
+                                                    View Details
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                ) : null}
             </div>
-
-
-
-            {orders.length === 0 ? (
-
-                <p>No orders found.</p>
-
-            ) : (
-
-
-                <table
-                    border="1"
-                    cellPadding="10"
-                    style={{
-                        borderCollapse: "collapse",
-                        width: "100%"
-                    }}
-                >
-
-                    <thead>
-
-                    <tr>
-
-                        <th>Order ID</th>
-                        <th>User</th>
-                        <th>Status</th>
-                        <th>Total Amount</th>
-                        <th>Shipping Address</th>
-                        <th>Clinic Pickup</th>
-
-                    </tr>
-
-                    </thead>
-
-
-
-                    <tbody>
-
-                    {orders.map((order) => (
-
-                        <tr
-                            key={order.id}
-                            onClick={() => setSelectedOrder(order)}
-                            style={{
-                                cursor: "pointer"
-                            }}
-                        >
-
-                            <td>
-                                {order.id}
-                            </td>
-
-
-                            <td>
-                                {order.user?.username}
-                            </td>
-
-
-                            <td>
-                                {order.status}
-                            </td>
-
-
-                            <td>
-                                R {order.totalAmount}
-                            </td>
-
-
-                            <td>
-                                {order.shippingAddress}
-                            </td>
-
-
-                            <td>
-                                {order.clinicPickupLocation}
-                            </td>
-
-
-                        </tr>
-
-                    ))}
-
-
-                    </tbody>
-
-
-                </table>
-
-            )}
-
-
-
-            <OrderDetails
-                selectedOrder={selectedOrder}
-            />
-
-
-        </div>
-
+        </>
     );
-
-}
-
+};
 
 export default OrderHistory;
